@@ -1,0 +1,52 @@
+body {
+    background-color: #343a40;
+    color: #ffffff;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.container-custom {
+    width: 100%;
+}
+.left-section {
+    text-align: center;
+}
+.form-container {
+    background: #2c2f33;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    width: 400px;
+    display: none; /* Ocultamos inicialmente ambos formularios */
+}
+.form-control {
+    background-color: transparent;
+    border: 1px solid #6c757d;
+    color: white;
+}
+label {
+    color: white;
+}
+.btn-outline-primary {
+    border-color: white;
+    color: white;
+}
+.btn-outline-primary:hover {
+    background-color: white;
+    color: #343a40;
+}
+
+#welcomeTitle {
+    font-size: 50px; /* Aumenta el tamaño del título */
+    margin-bottom: 30px; /* Aumenta la separación entre el título y los botones */
+}
+
+#buttonContainer {
+    margin-top: 40px; /* Añade espacio encima del contenedor de botones, si es necesario */
+}
+
+#loginBtn, #registerBtn {
+    padding: 10px 20px; /* Aumenta el padding de los botones para hacerlos más grandes */
+    margin-right: 10px; /* Asegura que haya suficiente espacio entre los botones */
+}

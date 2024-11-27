@@ -1,0 +1,83 @@
+.navbar {
+    padding: 10px 20px;
+}
+
+.form-control,
+.form-select {
+    margin-right: 15px;
+}
+
+.select2-container {
+    margin-right: 15px;
+    width: 250px !important; /* Asegura que el ancho del select2 sea consistente */
+}
+
+#projectContainer {
+    max-height: 500px;             /* Mantener la altura máxima */
+    overflow-y: auto;              /* Scroll vertical */
+    display: flex;                 
+    flex-direction: column;
+    align-items: center;           /* Mantener la alineación centrada */
+    justify-content: flex-start;   /* Mantener la alineación vertical */
+    margin: 20px auto;             /* Mantener el margen superior y el centrado horizontal */
+    max-width: 800px;              /* Mantener el ancho máximo */
+    padding: 20px;                 /* Espaciado interno */
+    background-color: #2c3e50;     /* Fondo gris oscuro */
+    border-radius: 10px;           /* Bordes redondeados */
+    border: 1px solid #5d6d7e;     /* Borde gris para diferenciación */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Sombra suave */
+}
+
+
+
+.project-card {
+    width: 80%;                    /* Mantener el ancho */
+    max-width: 600px;              /* Mantener el ancho máximo */
+    padding: 15px;                 /* Mantener el padding */
+    margin-bottom: 10px;           /* Mantener el margen inferior entre tarjetas */
+    background-color: #3b4a59;     /* Fondo gris medio oscuro */
+    color: #ecf0f1;                /* Texto claro */
+    border-radius: 5px;            /* Bordes redondeados */
+    text-align: center;            /* Mantener el centrado del texto */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Sombra suave */
+    transition: transform 0.3s ease, opacity 0.3s ease; /* Efecto de animación */
+    opacity: 0;                    /* Opacidad inicial para la animación de entrada */
+    transform: translateY(20px);   /* Posición inicial para la animación */
+}
+
+.project-card.show {
+    opacity: 1;                    /* Hace visible la tarjeta */
+    transform: translateY(0);      /* Vuelve a la posición normal */
+}
+
+.project-card:hover {
+    transform: scale(1.05);        /* Efecto de escala al pasar el ratón */
+}
+
+
+
+#perfilUser {
+    min-height: 500px;             /* Mantener la altura */
+    margin-top: 20px;              /* Mantener el margen */
+    padding: 20px;                 /* Espaciado interno */
+    background-color: #34495e;     /* Fondo gris más oscuro */
+    color: #ecf0f1;                /* Texto claro */
+    border-radius: 10px;           /* Bordes redondeados */
+    border: 1px solid #5d6d7e;     /* Borde gris */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Sombra para darle relieve */
+}
+
+
+.btn {
+    background-color: #3498db; /* Azul brillante */
+    border: none;
+    color: #ffffff;            /* Texto blanco */
+    padding: 10px 20px;        /* Mantener el tamaño del botón */
+    border-radius: 5px;        /* Bordes redondeados */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Sombra suave */
+    transition: background-color 0.3s ease; /* Transición para el hover */
+}
+
+.btn:hover {
+    background-color: #2980b9; /* Azul más oscuro al pasar el ratón */
+}
