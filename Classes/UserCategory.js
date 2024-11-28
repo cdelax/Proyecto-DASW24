@@ -1,53 +1,90 @@
 "use strict";
 
+const fs = require("fs");
+const path = require("path");
 const { deepFreeze } = require("../controllers/utils");
 
 class UserCategory {
-    static CATEGORIES = {};
+    static CATEGORIES = {}; // Objeto para almacenar las categorías
+
     constructor(name, description) {
-        this.name = name;
-        this.description = description;
+        this._name = name;
+        this._description = description;
     }
 
+    /**
+     * Cargar categorías desde un archivo JSON.
+     * @param {string} filePath - Ruta al archivo JSON.
+     */
     static loadCategoriesFromFile = async (filePath) => {
-        const data = await fs.promises.readFile(path.resolve(filePath), "utf8");
-        const categoriesArray = JSON.parse(data);
-    
-        // Crear el objeto con las llaves (SOFTWARE, HARDWARE, etc.)
-        categoriesArray.forEach(category => {
-            UserCategory.CATEGORIES[category.name] = new UserCategory(category.name, category.description);
-        });
-    
-        // Congelar profundamente el objeto
-        deepFreeze(categoriesObject);
-    
-        return categoriesObject;
+        try {
+            const data = await fs.promises.readFile(path.resolve(filePath), "utf8");
+            const categoriesArray = JSON.parse(data);
+
+            // Crear el objeto con las categorías
+            categoriesArray.forEach(category => {
+                UserCategory.CATEGORIES[category.name.toUpperCase()] = new UserCategory(category.name, category.description);
+            });
+
+            // Congelar profundamente el objeto
+            deepFreeze(UserCategory.CATEGORIES);
+        } catch (error) {
+            console.error("Error al cargar categorías desde archivo:", error);
+            throw error;
+        }
     };
 
-    static async loadCategoriesFromDatabase(dbClient,dataBaseName,collecionName) {
+    /**
+     * Cargar categorías desde una base de datos.
+     * @param {MongoClient} dbClient - Cliente de MongoDB conectado.
+     * @param {string} dataBaseName - Nombre de la base de datos.
+     * @param {string} collecionName - Nombre de la colección.
+     */
+    static async loadCategoriesFromDatabase(dbClient, dataBaseName, collecionName) {
         try {
-            const db = dbClient.db(dataBaseName); // Nombre de tu base de datos
-            const categoriesCollection = db.collection(collecionName); // Nombre de tu colección
+            const db = dbClient.db(dataBaseName); // Seleccionar la base de datos
+            const categoriesCollection = db.collection(collecionName); // Seleccionar la colección
 
             // Consultar todas las categorías de la colección
             const categoriesData = await categoriesCollection.find().toArray();
 
-            // Mapear los documentos a instancias de la clase Category
-            categoriesData.forEach(category)
-            return categoriesData.map(cat => new Category(cat.name, cat.description));
+            // Mapear los documentos a instancias de la clase UserCategory
+            categoriesData.forEach(category => {
+                UserCategory.CATEGORIES[category.name.toUpperCase()] = new UserCategory(category.name, category.description);
+            });
+
+            // Congelar profundamente el objeto
+            deepFreeze(UserCategory.CATEGORIES);
         } catch (error) {
             console.error("Error al cargar categorías desde la base de datos:", error);
-            throw error; // Lanza el error para que pueda manejarse en el nivel superior
+            throw error;
         }
     }
-    
 }
 
 module.exports = UserCategory;
 
 /**
- * 
  * Ejemplo de uso:
- * console.log(UserCategory.Categories.STUDENT.name); // Output: Student
- * console.log(UserCategory.Categories.ADMIN.description); // Output: An admin user with full control
+ * 
+ * // Desde archivo JSON
+ * UserCategory.loadCategoriesFromFile("./data/categories.json")
+ *     .then(() => console.log(UserCategory.CATEGORIES))
+ *     .catch(console.error);
+ * 
+ * // Desde base de datos
+ * const { MongoClient } = require("mongodb");
+ * const client = new MongoClient("mongodb+srv://<username>:<password>@cluster0.mongodb.net");
+ * 
+ * (async () => {
+ *     try {
+ *         await client.connect();
+ *         await UserCategory.loadCategoriesFromDatabase(client, "project_management", "categories");
+ *         console.log(UserCategory.CATEGORIES);
+ *     } catch (error) {
+ *         console.error(error);
+ *     } finally {
+ *         await client.close();
+ *     }
+ * })();
  */
