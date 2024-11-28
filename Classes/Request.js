@@ -1,7 +1,8 @@
 "use strict";
+
 class Request {
-    constructor(idRequest, idProject, idUser, date, status) {
-        this.idRequest = idRequest;
+    constructor(idProject, idUser) {
+        this.idRequest = id;
         this.idProject = idProject;
         this.idUser = idUser;
         this.date = date;

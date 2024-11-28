@@ -1,6 +1,6 @@
 "use strict";
 
-class AdminProject {
+class AdminProject{
     constructor() {
         this.proyectosAdministrados = []; // List of ProjectWorkPlace
     }

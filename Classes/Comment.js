@@ -1,6 +1,7 @@
 "use strict";
+
 class Comment {
-    constructor(id, idProject, idUser, message, date) {
+    constructor(idProject, idUser, message) {
         this.id = id;
         this.idProject = idProject;
         this.idUser = idUser;
