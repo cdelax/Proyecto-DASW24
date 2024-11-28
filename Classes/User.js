@@ -4,8 +4,9 @@ const e = require("express");
 const generateUUID = require("../controllers/utils");
 
 class User {
-    static EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    static EMAIL = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     static NAME = /^[a-zA-Z0-9]{3,}$/
+    static PASSWORD = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[%$#@!&*()+=])[a-zA-Z0-9%$#@!&*()+=]{6,}$/;
     constructor(email, name, password, career, profile, status, originPlace) {
         this._idUser = generateUUID();
         this._email = email;
@@ -16,6 +17,7 @@ class User {
         this._status = status; //Activo-inactivo string
         this._originPlace = originPlace;
         this._proyectosColaborador = []; // List of ProjectWorkPlace
+        this._requestsMade = []; // List of request made
     }
 
     get idUser() { return this._idUser; }
@@ -29,7 +31,7 @@ class User {
     get proyectosColaborador() { return this._proyectosColaborador; }
     
     set email(email) {
-        if(User.EMAIL_REGEX.test(email)){
+        if(User.EMAIL.test(email)){
             this._email = email;
             console.log("Dirección de correo electrónico agregada correctamente.");
         }
@@ -43,7 +45,7 @@ class User {
     set name(name) {
         if(User.NAME.test(name)) {
             this._name = name;
-            console.log("Nombre agergado con exito");
+            console.log("Nombre agregado con exito");
         }
         else {
             console.error("Formato inválido para el campo de name.\
@@ -51,16 +53,46 @@ class User {
         }
     }
 
+    set password(password) {
+        if(User.PASSWORD.test(password)) {
+            this._password = password;
+            console.log("Password agregado con exito");
+        }
+        else {
+            console.error("Formato inválido para el campo de 'password'. \
+                La contraseña debe contener al menos una letra, un número, un carácter especial (%$#@!&*()+=) y ser de longitud de minimo 6 caracteres.");
+        }
+    }
+
+    set profile(profile) {
+        this._profile = profile;
+    }
+
+    set originPlace(place) {
+        this._originPlace = place;
+    }
+
+    set career(career) { 
+        this._career = career;
+    }
+
+    set status(status) {
+        this._status = status;
+    }
+
+
+    hacerUnRequestAUnProyecto(idProject) {
+        const request = new Request(idProject, this._idUser);
+        this._requestsMade.push(request);
+        console.log(`Solicitud creada por el usuario ${this._idUser} para el proyecto ${idProject}`);
+        return request;
+    }
     
-    crearProyecto(title, description) {
-        // Implementación
-    }
 
-    hacerUnRequestAUnProyecto(project) {
+    hacerComentario(idProject,message) {
         // Implementación
-    }
-
-    hacerComentario(project) {
-        // Implementación
+        return new Comment(idProject,this._idUser,message);
     }
 }
+
+module.exports = User;
