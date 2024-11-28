@@ -1,39 +1,47 @@
 "use strict";
 
-class AdminProject {
+const ProjectWorkPlace = require("./ProjectWorkPlace");
+const User = require("./User");
+
+class AdminProject extends User{
     constructor(email, name, password, career, profile, status, placeOfOrigin) {
         super(email, name, password, career, profile, status, placeOfOrigin);
-        this.adminProjects = []; // Lista de proyectos que administra
+        this._adminProjects = []; // Lista de proyectos que administra
     }
 
-    ejecutarAgregarUsuario(project, idUser) {
+    crearProyecto(title,descripcion,category) {
+        const newProject = new ProjectWorkPlace(title,descripcion,this,category);
+        this.addProject(newProject);
+    }
+
+    ejecutarAgregarUsuario(project, userId) {
         // Implementación
         this._validateProject(project);
-        project.addUser(userId);
+        project.agregarUsuario(userId);
     }
 
     ejecutarCambiarRequerimientos(project, newRequirementsList) {
         // Implementación
         this._validateProject(project);
-        project.requirements = newRequirementsList.join(", ");
+        project.requerimientos = newRequirementsList.join(", ");
     }
 
     ejecutarCambiarEstatusDelProyecto(project, status) {
         // Implementación
         this._validateProject(project);
-        project.status = status;
+        project.estatusDelProyecto = status;
     }
 
     ejecutarCambiarTitulo(project, title) {
         // Implementación
         this._validateProject(project);
-        project.title = title;
+        project.titulo = title;
     }
 
-    ejecutarEliminarUsuario(project, idUser) {
+    ejecutarEliminarUsuario(project, userId) {
         // Implementación
         this._validateProject(project);
-        project.removeUser(userId);
+        project.eliminarUsuario(userId);
     }
 
     ejecutarCambiarDescripcion(project, description) {
@@ -42,16 +50,16 @@ class AdminProject {
         project.description = description;
     }
 
-    ejecutarAceptarSolicitud(project, request) {
+    ejecutarAceptarSolicitud(project, solicitud) {
         // Implementación
         this._validateProject(project);
-        project.acceptRequest(request);
+        project.aceptarSolicitud(solicitud);
     }
 
-    ejecutarRechazarSolicitud(project, request) {
+    ejecutarRechazarSolicitud(project, solicitud) {
         // Implementación
         this._validateProject(project);
-        project.rejectRequest(solicitud);
+        project.rechazarSolicitud(solicitud);
     }
 
     _validateProject(project) {
@@ -61,13 +69,13 @@ class AdminProject {
     }
 
     addProject(project) {
-        if (!this.adminProjects.includes(project)) {
-            this.adminProjects.push(project);
+        if (!this._adminProjects.includes(project)) {
+            this._adminProjects.push(project);
         }
     }
 
     removeProject(project) {
-        this.adminProjects = this.adminProjects.filter(p => p !== project);
+        this._adminProjects = this._adminProjects.filter(p => p !== project);
     }
 }
 
