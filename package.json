@@ -1,0 +1,21 @@
+{
+  "name": "proyecto-dasw24",
+  "version": "1.0.0",
+  "description": "1. **Rutas:**\r    - Se creará una carpeta específica para las rutas, donde cada archivo definirá la lógica para capturar las solicitudes del cliente y enviarlas al servidor.\r    - Estas rutas se encargan de identificar qué tipo de operación desea realizar el usuario (por ejemplo, obtener, crear o actualizar datos) y delegan estas tareas a los **controladores** correspondientes.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "keywords": [],
+  "author": "Santiago Ortiz Soto",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.1",
+    "mongoose": "^8.8.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.7"
+  }
+}

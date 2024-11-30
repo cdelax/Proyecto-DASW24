@@ -31,3 +31,7 @@
 5. **Las clases** proporcionan una estructura para los datos y encapsulan la lógica específica relacionada con las entidades del sistema.
 
 ---
+### para iniciar en producción.
+npm start
+### para el desarrollo con reinicio automático.
+npm run dev
