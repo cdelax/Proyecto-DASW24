@@ -1,6 +1,6 @@
 "use strict";
 
-const generateUUID = require("../controllers/utils");
+const generateUUID = require("../Controllers/utils");
 
 class ProjectWorkPlace {
     static LENGHT_DESCRIPTION = 250;

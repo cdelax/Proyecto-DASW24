@@ -1,7 +1,7 @@
 "use strict";
 
 const e = require("express");
-const generateUUID = require("../controllers/utils");
+const generateUUID = require("../Controllers/utils");
 
 class User {
     static EMAIL = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
