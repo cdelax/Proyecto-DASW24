@@ -4,8 +4,8 @@ const ProjectWorkPlace = require("./ProjectWorkPlace");
 const User = require("./User");
 
 class AdminProject extends User{
-    constructor(email, name, password, career, profile, status, placeOfOrigin) {
-        super(email, name, password, career, profile, status, placeOfOrigin);
+    constructor(email, name, password, career, placeOfOrigin) {
+        super(email, name, password, career,placeOfOrigin);
         this._adminProjects = []; // Lista de proyectos que administra
     }
 
@@ -76,6 +76,45 @@ class AdminProject extends User{
 
     removeProject(project) {
         this._adminProjects = this._adminProjects.filter(p => p !== project);
+    }
+
+
+    static createFromJson(jsonValue) {
+        let obj = JSON.parse(jsonValue);
+        return Product.createFromObject(obj);
+    }
+
+    static createFromObject(obj) {
+        let newUser = {};
+        Object.assign(newUser,obj);
+        AdminProject.cleanObject(newUser);
+
+        let user = new AdminProject(
+            newUser.email, 
+            newUser.name, 
+            newUser.password, 
+            newUser.career,
+            newUser.placeOfOrigin
+        );
+
+        if(newUser._idUser) {
+            user._idUser = newUser._idUser;
+        }
+        return user;
+    }
+
+    static cleanObject(obj) {
+        const productProperties = [
+            "idUser",
+            "email",
+            "name",
+            "password",
+            "career",
+            "placeOfOrigin"
+        ];
+        for(let prop in obj) {
+            if(!productProperties.includes(prop)) delete obj[prop];
+        }
     }
 }
 

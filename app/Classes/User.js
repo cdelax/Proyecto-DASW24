@@ -7,14 +7,18 @@ class User {
     static EMAIL = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     static NAME = /^[a-zA-Z0-9]{3,}$/
     static PASSWORD = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[%$#@!&*()+=])[a-zA-Z0-9%$#@!&*()+=]{6,}$/;
-    constructor(email, name, password, career, profile, status, originPlace) {
+    static DESCRIPTION_DEFAULT = "Hola soy nuevo";
+    static STATUS_ACTIVE = "active";
+    static STATUS_DESACTIVE = "desactive";
+
+    constructor(email, name, password, career,originPlace) {
         this._idUser = generateUUID();
         this._email = email;
         this._name = name;
         this._password = password;
         this._career = career; // UserCategory
-        this._profile = profile;
-        this._status = status; //Activo-inactivo string
+        this._profile = User.DESCRIPTION_DEFAULT;//Descripcion sobre el usurio
+        this._status = User.STATUS_ACTIVE; //Activo-inactivo string
         this._originPlace = originPlace;
         this._proyectosColaborador = []; // List of ProjectWorkPlace
         this._requestsMade = []; // List of request made
