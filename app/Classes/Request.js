@@ -19,15 +19,27 @@ class Request {
         return this._idRequest;
     }
 
+    get idProject() {
+        return this._idProject;
+    }
+
+    get idUser() {
+        return this._idUser;
+    }
+
+    get date() {
+        return this._date;
+    }
+
+    get status() {
+        return this._status;
+    }
+    
     set idRequest(value) {
         if (!value || typeof value !== "string") {
             throw new Error("idRequest debe ser una cadena válida.");
         }
         this._idRequest = value;
-    }
-
-    get idProject() {
-        return this._idProject;
     }
 
     set idProject(value) {
@@ -37,10 +49,6 @@ class Request {
         this._idProject = value;
     }
 
-    get idUser() {
-        return this._idUser;
-    }
-
     set idUser(value) {
         if (!value) {
             throw new Error("idUser es obligatorio.");
@@ -48,19 +56,11 @@ class Request {
         this._idUser = value;
     }
 
-    get date() {
-        return this._date;
-    }
-
     set date(value) {
         if (!value || isNaN(Date.parse(value))) {
             throw new Error("date debe ser una fecha válida.");
         }
         this._date = value;
-    }
-
-    get status() {
-        return this._status;
     }
 
     set status(value) {
