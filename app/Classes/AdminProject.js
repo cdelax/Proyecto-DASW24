@@ -14,10 +14,6 @@ class AdminProject extends User {
     return this._adminProjects;
   }
 
-  set adminProjects(value) {
-    throw new Error("No se puede asignar directamente la lista de proyectos administrados. Use addProject o removeProject.");
-  }
-
   // Métodos para administrar proyectos
   crearProyecto(title, descripcion, category) {
     const newProject = new ProjectWorkPlace(title, descripcion, this, category);
