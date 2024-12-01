@@ -1,6 +1,7 @@
 "use strict";
 
 const generateUUID = require("../Controllers/utils");
+const Request = require("./Request");
 
 class ProjectWorkPlace {
     static LENGTH_DESCRIPTION = 250;
@@ -16,7 +17,7 @@ class ProjectWorkPlace {
         this.admin = admin; // Administrador del proyecto
         this._users = []; // Lista de usuarios
         this.category = category; // Categoría del proyecto
-        this._requirementsUsers = []; // Lista de categorías de usuarios requeridas
+        this.requirementsUsers = []; // Lista de categorías de usuarios requeridas
         this._comments = []; // Lista de comentarios
         this._pendingRequests = []; // Lista de solicitudes pendientes
     }
@@ -42,6 +43,14 @@ class ProjectWorkPlace {
         return this._users;
     }
 
+    get pendingRequests() {
+        return this._pendingRequests;
+    }
+
+    get comments() {
+        return this._comments;
+    }
+    
     // Setters con validación
     set titulo(title) {
         if (!title || typeof title !== "string" || title.trim() === "") {
@@ -108,7 +117,7 @@ class ProjectWorkPlace {
             throw new Error("La solicitud no existe en la lista de pendientes.");
         }
 
-        request.status = "accepted";
+        request.status = Request.ACEPTED;
         this.pendingRequests.splice(index, 1);
 
         if (!this.users.includes(request.idUser)) {
@@ -125,7 +134,7 @@ class ProjectWorkPlace {
             throw new Error("La solicitud no existe en la lista de pendientes.");
         }
 
-        request.status = "rejected";
+        request.status = Request.REJECTED;
         this.pendingRequests.splice(index, 1);
         return `Solicitud rechazada: Usuario ${request.idUser} no se agregó al proyecto.`;
     }
@@ -134,7 +143,7 @@ class ProjectWorkPlace {
         if (!comment || typeof comment !== "string" || comment.trim() === "") {
             throw new Error("El comentario debe ser un texto válido.");
         }
-        this.comments.push(comment);
+        this._comments.push(comment);
         return "Comentario agregado con éxito.";
     }
 }
