@@ -23,6 +23,11 @@ class ProjectWorkPlace {
     }
 
     // Getters
+
+    get idProject () {
+        return this._id
+    }
+
     get titulo() {
         return this._titulo;
     }
@@ -81,8 +86,12 @@ class ProjectWorkPlace {
     }
 
     // Métodos del proyecto
+    usuarioExiste(idUser) {
+        return this.users.includes(idUser) ;
+    }
+
     agregarUsuario(idUser) {
-        if (!idUser || this.users.includes(idUser)) {
+        if (!idUser || usuarioExiste(idUser)) {
             throw new Error("El usuario ya está en el proyecto o el ID es inválido.");
         }
         this.users.push(idUser);
