@@ -3,97 +3,139 @@
 const generateUUID = require("../Controllers/utils");
 
 class ProjectWorkPlace {
-    static LENGHT_DESCRIPTION = 250;
+    static LENGTH_DESCRIPTION = 250;
+    static STATUS_ACTIVE = "active";
+    static STATUS_INACTIVE = "inactive";
 
     constructor(title, description, admin, category) {
-        this._idProject = generateUUID();
-        this._title = title;
-        this._description = description;
-        this._createdDate = new Date().toLocaleString();
-        this._status = 'active'; // active-inactive
-        this._admin = admin; // AdminProject
-        this._users = []; // List of User
-        this._category = category; // ProjectCategory
-        this._requirementsUsers = []; // List of UserCategory
-        this._comments = []; // List of Comment
+        this.idProject = generateUUID();
+        this.titulo = title; // Validado en el setter
+        this.descripcion = description; // Validado en el setter
+        this.createdDate = new Date().toLocaleString();
+        this.estatusDelProyecto = ProjectWorkPlace.STATUS_ACTIVE; // Valor predeterminado
+        this.admin = admin; // Administrador del proyecto
+        this._users = []; // Lista de usuarios
+        this.category = category; // Categoría del proyecto
+        this._requirementsUsers = []; // Lista de categorías de usuarios requeridas
+        this._comments = []; // Lista de comentarios
         this._pendingRequests = []; // Lista de solicitudes pendientes
     }
 
-    // Setters
-    set requerimientos(newRequirementsList) {
-        this._requirementsUsers = newRequirementsList;
+    // Getters
+    get titulo() {
+        return this._titulo;
     }
 
-    set estatusDelProyecto(status) {
-        this._status = status;
+    get descripcion() {
+        return this._descripcion;
     }
 
+    get estatusDelProyecto() {
+        return this._estatusDelProyecto;
+    }
+
+    get requirementsUsers() {
+        return this._requirementsUsers;
+    }
+
+    get users() {
+        return this._users;
+    }
+
+    // Setters con validación
     set titulo(title) {
-        this._title = title;
+        if (!title || typeof title !== "string" || title.trim() === "") {
+            throw new Error("El título no puede estar vacío y debe ser una cadena válida.");
+        }
+        this._titulo = title;
     }
 
     set descripcion(description) {
-        if (description.length < ProjectWorkPlace.LENGHT_DESCRIPTION) {
-            this._description = description;
-            console.log("La descripción cambió");
-        } else {
-            console.warn("La descripción sobrepasa el número de caracteres permitidos");
+        if (description.length > ProjectWorkPlace.LENGTH_DESCRIPTION) {
+            throw new Error(`La descripción no puede exceder los ${ProjectWorkPlace.LENGTH_DESCRIPTION} caracteres.`);
         }
+        this._descripcion = description;
     }
 
-    // Otros métodos
+    set estatusDelProyecto(status) {
+        if (![ProjectWorkPlace.STATUS_ACTIVE, ProjectWorkPlace.STATUS_INACTIVE].includes(status)) {
+            throw new Error("El estatus debe ser 'active' o 'inactive'.");
+        }
+        this._estatusDelProyecto = status;
+    }
+
+    set requirementsUsers(newRequirementsList) {
+        if (!Array.isArray(newRequirementsList)) {
+            throw new Error("Los requerimientos deben ser una lista.");
+        }
+        this._requirementsUsers = newRequirementsList;
+    }
+
+    // Métodos del proyecto
     agregarUsuario(idUser) {
-        this._users.push(idUser);
+        if (!idUser || this.users.includes(idUser)) {
+            throw new Error("El usuario ya está en el proyecto o el ID es inválido.");
+        }
+        this.users.push(idUser);
+        return `Usuario ${idUser} agregado al proyecto ${this.idProject}`;
     }
 
     eliminarUsuario(idUser) {
-        const index = this._users.indexOf(idUser);
-        if (index > -1) {
-            this._users.splice(index, 1);
-            console.info("Usuario eliminado con éxito");
-        } else {
-            console.info("Usuario no existente.");
+        const index = this.users.indexOf(idUser);
+        if (index === -1) {
+            throw new Error("El usuario no existe en el proyecto.");
         }
+        this.users.splice(index, 1);
+        return `Usuario ${idUser} eliminado del proyecto ${this.idProject}`;
     }
-
+ 
     recibirSolicitud(request) {
-        const exists = this._pendingRequests.some(existingRequest =>
+        const exists = this.pendingRequests.some(existingRequest =>
             existingRequest.idUser === request.idUser && existingRequest.idProject === request.idProject
         );
 
-        if (!exists) {
-            this._pendingRequests.push(request);
-            console.log("Solicitud en lista de espera.");
-        } else {
-            console.warn("La solicitud ya fue hecha y está en espera.");
+        if (exists) {
+            throw new Error("La solicitud ya está en espera.");
         }
+
+        this.pendingRequests.push(request);
+        return "Solicitud agregada a la lista de espera.";
     }
 
     aceptarSolicitud(request) {
-        const inList = this._pendingRequests.indexOf(request);
-        if (inList > -1) {
-            request.status = 'accepted';
-            this._pendingRequests.splice(inList, 1);
-            if (!this._users.includes(request.idUser)) {
-                this.agregarUsuario(request.idUser);
-                console.log(`Solicitud aceptada: Usuario ${request.idUser} agregado al proyecto ${this._idProject}`);
-            } else {
-                console.warn("Usuario ya existente en el proyecto.");
-            }
+        const index = this.pendingRequests.indexOf(request);
+        if (index === -1) {
+            throw new Error("La solicitud no existe en la lista de pendientes.");
+        }
+
+        request.status = "accepted";
+        this.pendingRequests.splice(index, 1);
+
+        if (!this.users.includes(request.idUser)) {
+            this.agregarUsuario(request.idUser);
+            return `Solicitud aceptada: Usuario ${request.idUser} agregado al proyecto.`;
+        } else {
+            throw new Error("El usuario ya es colaborador del proyecto.");
         }
     }
 
     rechazarSolicitud(request) {
-        const inList = this._pendingRequests.indexOf(request);
-        if (inList > -1) {
-            request.status = 'rejected';
-            this._pendingRequests.splice(inList, 1);
-            console.log(`Solicitud rechazada: Usuario ${request.idUser} no se agregó al proyecto ${this._idProject}`);
+        const index = this.pendingRequests.indexOf(request);
+        if (index === -1) {
+            throw new Error("La solicitud no existe en la lista de pendientes.");
         }
+
+        request.status = "rejected";
+        this.pendingRequests.splice(index, 1);
+        return `Solicitud rechazada: Usuario ${request.idUser} no se agregó al proyecto.`;
     }
 
     recibirComentario(comment) {
-        this._comments.push(comment);
+        if (!comment || typeof comment !== "string" || comment.trim() === "") {
+            throw new Error("El comentario debe ser un texto válido.");
+        }
+        this.comments.push(comment);
+        return "Comentario agregado con éxito.";
     }
 }
 
