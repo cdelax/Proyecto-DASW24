@@ -16,7 +16,7 @@ router.route("/:idProject/requests")
 router.route("/:idProject/comments")
     .post(userController.createComment);
 
-router.route("/:projectId/projects")
+router.route("/:idProject/projects")
     .delete(userController.leaveProject);
 
 module.exports = router;

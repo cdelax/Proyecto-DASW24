@@ -1,28 +1,29 @@
 "use strict";
 
-const dataHandlerUser = require('../Handlers/userHandler')
-let messageInfo;
-//email, name, password, career, placeOfOrigin
-class UserController
-{
-    static async createUser(req,res) {
-        try {
-            const user = req.body;
-            if(!user.email || 
-                !user.name || 
-                !user.password || 
-                !user.career || 
-                !user.placeOfOrigin
-            ) {
-                return res.status(400).json({message:"Faltan Campos obligatorios"});
-            }
-    
-            messageInfo = await dataHandlerUser.createUser(user);
-            req.session.userId = newUser.idUser;
+const dataHandlerUser = require('../Handlers/UserHandler');
+const Joi = require('joi');
 
-            res.status(201).json({message: messageInfo });
-        }
-        catch(error) {
+class UserController {
+    static async createUser(req, res) {
+        const userSchema = Joi.object({
+            email: Joi.string().email().required(),
+            name: Joi.string().min(3).required(),
+            password: Joi.string().min(6).required(),
+            career: Joi.string().required(),
+            placeOfOrigin: Joi.string().required(),
+        });
+
+        try {
+            const { error } = userSchema.validate(req.body);
+            if (error) {
+                return res.status(400).json({ message: error.details[0].message });
+            }
+
+            const user = req.body;
+            const newUser = await dataHandlerUser.createUser(user);
+            req.session.userId = newUser.idUser;
+            res.status(201).json({ message: "Usuario creado con éxito." });
+        } catch (error) {
             res.status(500).json({ message: error.message });
         }
     }
@@ -32,8 +33,12 @@ class UserController
             const idProject = req.params.idProject;
             const userId = req.session.userId;
 
-            messageInfo = await dataHandlerUser.sendRequest(idProject, userId);
-            res.status(201).json({ message: result });
+            if (!userId) {
+                return res.status(401).json({ message: "No estás autenticado." });
+            }
+
+            const messageInfo = await dataHandlerUser.sendRequest(idProject, userId);
+            res.status(200).json({ message: messageInfo });
         } catch (error) {
             console.error("Error en sendRequest:", error);
             res.status(500).json({ message: error.message });
@@ -43,43 +48,47 @@ class UserController
     static async updateUser(req, res) {
         try {
             const user = req.body;
-    
-            messageInfo = await dataHandlerUser.updateUser(user);
+            const messageInfo = await dataHandlerUser.updateUser(user);
             res.status(200).json({ message: messageInfo });
         } catch (error) {
             console.error("Error en updateUser:", error);
             res.status(500).json({ message: error.message });
         }
     }
-    
 
     static async createComment(req, res) {
         try {
             const comment = req.body;
             const idProject = req.params.idProject;
             const userId = req.session.userId;
-    
-            messageInfo = await dataHandlerUser.sendComment(idProject, userId, comment.message);
+
+            if (!userId) {
+                return res.status(401).json({ message: "No estás autenticado." });
+            }
+
+            const messageInfo = await dataHandlerUser.sendComment(idProject, userId, comment.message);
             res.status(201).json({ message: messageInfo });
         } catch (error) {
             console.error("Error en createComment:", error);
             res.status(500).json({ message: error.message });
         }
     }
-    
 
-    static async leaveProject (req,res) {
+    static async leaveProject(req, res) {
         try {
             const userId = req.session.userId;
             const idProject = req.params.idProject;
-            messageInfo = await dataHandlerUser.quitProject(idProject,userId);
-            res.status(201).json({ message: messageInfo });
-        }
-        catch(error) {
+
+            if (!userId) {
+                return res.status(401).json({ message: "No estás autenticado." });
+            }
+
+            const messageInfo = await dataHandlerUser.quitProject(idProject, userId);
+            res.status(200).json({ message: messageInfo });
+        } catch (error) {
             res.status(500).json({ message: error.message });
         }
     }
-
 }
 
 module.exports = UserController;
