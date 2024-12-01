@@ -23,7 +23,6 @@ class ProjectWorkPlace {
     }
 
     // Getters
-
     get idProject () {
         return this._id
     }
